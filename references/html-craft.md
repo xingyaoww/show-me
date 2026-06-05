@@ -121,6 +121,24 @@ A picture the human can't verify is a liability. Make claims droppable to source
 - For local-only / unpushed work, link `file://` absolute paths or just show `path:line` plainly.
 - Rule: if a box can't be tied to a symbol+location, it's a *concept* box — style it differently and say so; don't fake a link.
 
+### Grounding discipline (borrowed from DeepWiki)
+
+DeepWiki-style wikis enforce grounding hard — worth copying:
+
+- **Source manifest per section.** Open each major section / component card with a small
+  collapsed list of the exact files it's built from:
+  `<details><summary>Sources</summary> path/a.py · path/b.py …</details>`. The reader sees
+  what the claim rests on before trusting it.
+- **Cite after every substantive claim, diagram, table, and snippet.** Inline format:
+  `Sources: [path:start-end]` (range) or `[path:line]` (single), multiple allowed. A
+  section with no citations is a smell — either ground it or cut it.
+- **Solely from the code. Do not invent.** Every statement, box, edge, and number must be
+  derived from files you actually read — not from how "similar systems usually work." If
+  something important isn't in the code, say so explicitly rather than guessing. Mark genuine
+  inferences as inferences.
+- **Breadth check.** A "comprehensive" page that cites only 1-2 files is probably shallow —
+  pull in the related files (callers, callees, config, tests) until the picture is real.
+
 ## Code excerpts (when shown)
 
 Keep them short and hand-highlight with spans (no JS highlighter): wrap keywords
