@@ -50,9 +50,10 @@ grounding, serving) — that lives in [`references/html-craft.md`](references/ht
 6. **Editorial, not dashboard.** Calm document aesthetic (see craft ref): readable
    width, numbered sticky table of contents, sections, callouts — a thing a person
    reads top to bottom, not a wall of widgets.
-7. **Serve it for cross-machine viewing.** People often look from a different machine —
-   after generating, serve over `python3 -m http.server` and hand back a LAN / tunnel
-   IP URL, not just `localhost`.
+7. **Hand back a clickable link.** People look from a different machine. Prefer pushing the
+   self-contained page to GitHub and returning an `htmlpreview.github.io/?<blob-url>` link —
+   anyone clicks and sees it rendered, no download, no reachable server. Fall back to
+   `python3 -m http.server` + a LAN/tunnel IP only when you can't push. (See craft ref.)
 
 ## Anti-patterns
 

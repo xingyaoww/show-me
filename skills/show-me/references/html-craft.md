@@ -159,7 +159,37 @@ than hand-SVG. `mermaid.initialize({startOnLoad:true, theme:'neutral'})`. Node t
 `["..."]`; escape `"` as `&quot;`. But for the **carrying** before/after diagram, hand-SVG
 wins — auto-layout drifts and breaks the side-by-side alignment that makes the delta readable.
 
-## Serve for cross-machine viewing
+## Hand it to the human
+
+The page is useless if the reader can't open it. Two ways; **prefer the GitHub link** — a
+plain clickable URL needs no network reachability to *your* machine and no local download.
+
+### Preferred: push to GitHub → htmlpreview link
+
+Because the page is **self-contained**, GitHub can render it through `htmlpreview.github.io`
+(it fetches the raw HTML and serves it with the right content-type — plain `raw.githubusercontent.com`
+won't, it returns `text/plain`). Push the file, then build the link:
+
+```bash
+# commit the html somewhere in a repo you can push (a branch, a .pr/ or docs/ dir is fine)
+git add path/to/page.html && git commit -m "show-me page" && git push origin <branch>
+# link template:
+#   https://htmlpreview.github.io/?https://github.com/<owner>/<repo>/blob/<branch>/<path>.html
+```
+
+Example shape:
+`https://htmlpreview.github.io/?https://github.com/OWNER/REPO/blob/BRANCH/dir/page.html`
+
+Anyone clicks it and sees the rendered page — no download, no server, works across machines.
+Caveats: works best for self-contained pages (inline CSS/SVG — what this skill produces);
+CDN `<script>` (e.g. Mermaid) still load over the network but render fine; private repos
+need the viewer to be authed to GitHub. (GitHub Pages on the repo is an alternative if you
+want a stable URL without the `htmlpreview` prefix.)
+
+### Local alternative: serve over HTTP
+
+When you can't/shouldn't push (unpushed work, private context), serve it and hand back a
+LAN / tunnel IP — not `localhost`, since the human is often on another machine:
 
 ```bash
 cd <dir> && (python3 -m http.server <port> >/dev/null 2>&1 &)
@@ -167,5 +197,5 @@ ip -4 addr show | grep -oP 'inet \K[0-9.]+' | grep -v 127.0.0.1   # LAN / overla
 command -v tailscale >/dev/null && tailscale ip -4 | head -1       # tunnel IP (cross-net)
 ```
 
-`http.server` binds `0.0.0.0`, so hand back `http://<LAN-or-tunnel-IP>:<port>/` (not just
-localhost — the human is often on another machine). If it won't open, it's usually a firewall.
+`http.server` binds `0.0.0.0` → `http://<LAN-or-tunnel-IP>:<port>/`. If it won't open, it's
+usually a firewall.

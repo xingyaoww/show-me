@@ -86,7 +86,9 @@ Once installed, just ask in natural language — the agent routes via `SKILL.md`
 - **"show me what this PR changes — before vs after"** / "visualize this diff" → change report
 - **"visualize how X works"** → targeted diagram, grounded to code
 
-The agent generates a self-contained HTML page and serves it back at a LAN / tunnel URL.
+The agent generates a self-contained HTML page and hands back a clickable link — ideally a
+`htmlpreview.github.io/?<github-blob-url>` link (push the page, click to view rendered, no
+download or local server), or a LAN / tunnel URL when pushing isn't an option.
 
 ## License
 
