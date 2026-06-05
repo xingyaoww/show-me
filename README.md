@@ -38,16 +38,65 @@ Shared craft: **[references/html-craft.md](references/html-craft.md)**.
 5. Self-contained & offline.
 6. Editorial, not dashboard.
 
-## Install (as a Claude Code skill)
+## Install
 
-Place this repo's contents under a skills directory the agent discovers, e.g.:
+`show-me` is a single skill: a `SKILL.md` (the index/router) plus a `references/` folder.
+Both Claude Code and Codex discover skills by directory — installing is just cloning this
+repo into the agent's skills directory under the name `show-me`.
+
+### Claude Code
+
+User-level (available in every session):
 
 ```bash
 git clone https://github.com/xingyaoww/show-me ~/.claude/skills/show-me
 ```
 
-Then ask the agent: **"show me this repo"**, **"show me what this PR changes (before vs after)"**,
-or **"visualize how this works"**.
+Project-level (only in one repo, and shareable with the team via git):
+
+```bash
+git clone https://github.com/xingyaoww/show-me .claude/skills/show-me
+```
+
+Start (or `/reload`) Claude Code and the `show-me` skill is picked up automatically from
+its `SKILL.md` frontmatter — no config to edit.
+
+### Codex
+
+User-level:
+
+```bash
+git clone https://github.com/xingyaoww/show-me ~/.codex/skills/show-me
+```
+
+Project-level:
+
+```bash
+git clone https://github.com/xingyaoww/show-me .codex/skills/show-me
+```
+
+Codex loads skills from its skills directory on session start; the cloned `SKILL.md`
+becomes available the same way.
+
+### Update / uninstall
+
+```bash
+git -C ~/.claude/skills/show-me pull      # update (swap path for your install)
+rm -rf ~/.claude/skills/show-me           # uninstall
+```
+
+> Tip: to keep one clone and share it across both agents, clone once and symlink:
+> `ln -s ~/.claude/skills/show-me ~/.codex/skills/show-me`.
+
+## Use
+
+Once installed, just ask in natural language — the agent routes via `SKILL.md`:
+
+- **"show me this repo"** / "help me understand this codebase" → new-repo report
+- **"show me what this PR changes — before vs after"** / "visualize this diff" → change report
+- **"visualize how X works"** → targeted diagram, grounded to code
+
+The agent generates a self-contained HTML page and serves it back at a LAN / tunnel URL.
 
 ## License
 
