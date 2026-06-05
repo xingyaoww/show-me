@@ -1,0 +1,25 @@
+{
+  "name": "show-me",
+  "owner": {
+    "name": "Xingyao Wang",
+    "email": "xingyaoww@gmail.com"
+  },
+  "description": "Visualize code and changes as self-contained HTML — big picture + before/after, grounded to code.",
+  "plugins": [
+    {
+      "name": "show-me",
+      "source": ".",
+      "description": "Turn a codebase or a change into one self-contained HTML page: big picture, before/after core difference, every claim clickable back to code.",
+      "displayName": "Show Me",
+      "author": {
+        "name": "Xingyao Wang",
+        "email": "xingyaoww@gmail.com"
+      },
+      "homepage": "https://github.com/xingyaoww/show-me",
+      "repository": "https://github.com/xingyaoww/show-me",
+      "license": "MIT",
+      "keywords": ["visualization", "diagrams", "code-review", "architecture", "onboarding", "svg", "mermaid"],
+      "category": "productivity"
+    }
+  ]
+}

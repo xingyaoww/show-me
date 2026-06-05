@@ -1,0 +1,9 @@
+{
+  "name": "show-me",
+  "description": "Turn a codebase or a change into one self-contained HTML page: big picture, before/after core difference, every claim clickable back to code.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Xingyao Wang",
+    "email": "xingyaoww@gmail.com"
+  }
+}
