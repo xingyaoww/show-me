@@ -39,14 +39,21 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
    function that does it.
 5. **Components** — short subsection per major piece: its job, key entry symbol, what it
    depends on, `path:line`. A table works well.
-6. **Where to start (reading guide)** — rank the handful of files a newcomer should read
+6. **Dependency graph** — *who depends on whom*, drawn as a typed-edge graph (color the
+   edges by kind: import vs runtime call vs shared store vs build/deploy — see the
+   dependency-graph technique in [`html-craft.md`](html-craft.md)). Back it with a
+   `from → to · kind · path:line` matrix so every edge is verifiable. Most valuable for
+   multi-package or multi-service codebases where the *coupling structure* (which one hard
+   dependency couples everything vs. what's decoupled behind calls/stores) is the insight.
+   For a single tightly-coupled package this collapses into section 5 — cut it.
+7. **Where to start (reading guide)** — rank the handful of files a newcomer should read
    first, by *importance*, not directory order. Approximate importance by fan-in (how many
    modules import/call it), centrality on the spine, and size of responsibility — the
    entrypoint, the core type, the orchestrator. Then "want to change X? start at `file`"
    task→location pointers so the reader can act after reading. (DeepWiki-style tools rank
    this with PageRank over the import graph; a careful manual read of "what does everything
    depend on" gets you the same top-5.)
-7. **(optional) Notable choices / gotchas** — non-obvious design decisions or sharp edges
+8. **(optional) Notable choices / gotchas** — non-obvious design decisions or sharp edges
    worth flagging, only if you actually found them in code/docs.
 
 ## Emphasis

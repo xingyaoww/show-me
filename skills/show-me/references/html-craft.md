@@ -112,6 +112,56 @@ Two ways to show before/after:
 1. **Side-by-side figures** in a `.ba` grid — `<figure>` "Before" | `<figure>` "After". Best when layouts differ a lot.
 2. **One overlaid figure** — existing nodes dashed-gray, new nodes/edges solid-accent + orange delta, in the same coordinate space. Best when the change is *additive* to an existing structure (most legible "what's new" read).
 
+## Dependency / relationship graphs (typed edges)
+
+A common ask is "draw the dependency graph" — who imports whom, who calls whom, who
+shares a store. A plain box-and-arrow blob fails here: the reader can't tell *what kind*
+of dependency each arrow is, and an all-to-all graph degenerates into a hairball. The
+technique that works: **color the edge by its KIND, and make the kind legible from a
+legend.** The arrow's existence is half the information; its *type* is the other half.
+
+**Encode edge kind, not just direction.** Pick a small fixed vocabulary of dependency
+kinds and give each one a distinct stroke. A typical set for a software graph:
+
+```html
+<defs>
+ <marker id="m-imp" .../> <marker id="m-call" .../> <marker id="m-store" .../>
+ <style>
+  .imp  {stroke:#2b4eaa;stroke-width:2;fill:none}                 /* code import / compile-time type dep */
+  .call {stroke:#b25b0e;stroke-width:1.6;fill:none}              /* runtime service call (HTTP/RPC/queue) */
+  .store{stroke:#2f7a3a;stroke-width:1.4;fill:none;stroke-dasharray:5 3} /* shared datastore: write→store→read */
+  .build{stroke:#8a8a82;stroke-width:1.5;fill:none;stroke-dasharray:2 2} /* build / deploy / codegen */
+ </style>
+</defs>
+```
+
+The exact kinds depend on the system — adapt them (e.g. `inherits`, `event`, `config`,
+`generates`). The rule is: **one stroke style per kind, defined once, shown in a legend
+the reader can't miss.** A graph with three arrow colors and no legend is a worse graph
+than one with prose.
+
+**Discipline for a readable dep graph:**
+- **Distinguish nodes too.** Color/shape nodes by group (layer, owner, runtime, package)
+  so clusters read at a glance. Give stores/externals a different shape than code units.
+- **Direction = "depends on".** Be consistent: arrow points from the dependent to the
+  thing it needs. State the convention in the legend (people assume both directions).
+- **Kill the hairball.** If everything depends on everything, you're drawing at the wrong
+  altitude — collapse leaf nodes into their package, or split into two figures (e.g. a
+  runtime-dependency figure and a build/deploy figure, which often point opposite ways).
+  Don't draw an edge that's true of *every* node (e.g. "everything logs") — it's noise.
+- **Ground the edges, not just the nodes.** The high-value move: back the graph with a
+  small **dependency matrix** table — `from → to · kind · path:line` — where each row links
+  to the import statement / call site / config that *proves* the edge. The picture shows
+  shape; the table lets the reader verify any single edge.
+- **Call out the load-bearing edge.** Often one or two edges are the real coupling (a hard
+  compile-time dependency) while the rest are decoupled (calls/stores). Make those visually
+  loudest and say so — that's the insight a newcomer actually needs.
+- A relationship you can't tie to a real import/call/config is a *conjecture* — style it
+  differently (lighter / dotted) and label it, or leave it out.
+
+Mermaid can do a quick `graph LR` for a throwaway dep sketch, but it can't color edges by
+kind cleanly or hold a hand-tuned layout — for the carrying dependency figure, hand-SVG wins.
+
 ## Ground every claim to code (clickable)
 
 A picture the human can't verify is a liability. Make claims droppable to source:
