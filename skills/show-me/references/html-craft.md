@@ -162,6 +162,45 @@ than one with prose.
 Mermaid can do a quick `graph LR` for a throwaway dep sketch, but it can't color edges by
 kind cleanly or hold a hand-tuned layout — for the carrying dependency figure, hand-SVG wins.
 
+## Deployment / network topology (trust boundaries)
+
+When the repo ships to a real environment — anything with public ingress, TLS, load
+balancers, a VPN/overlay, multiple hosts/clusters, managed datastores — *how it's deployed
+and what's reachable from where* is part of understanding it, and a security-relevant part.
+Draw it as a left-to-right **topology with an explicit trust boundary**:
+
+```
+[ public ]  │  [ internal / overlay ]
+ client → DNS → edge (TLS / LB / WAF) │ → cluster ingress → service → datastore
+                                      ▲ trust boundary (draw it as a line)
+```
+
+What makes this diagram useful rather than decorative:
+- **Draw the trust boundary as a literal line** (dashed, loud color) separating "public /
+  untrusted" from "internal / overlay / private". The single most important thing a reader
+  takes away is *what is exposed vs. what is not*.
+- **Tier the path the way packets actually flow:** DNS (which provider, which record →
+  which IP) → edge (reverse proxy / LB / CDN, where TLS terminates) → internal transport
+  (VPN / overlay / private subnet) → cluster ingress → workload → datastore. One column per
+  tier reads cleanly.
+- **Mark exposure and auth at each boundary**, not just connectivity: which hostnames are
+  public, where TLS terminates, which ingress is behind an auth gateway/SSO vs. open, what
+  is reachable *only* on the internal network. A glyph legend works (🔒 authed · 🔑
+  self-auth · ⚠ open).
+- **State the exposed surface explicitly, and the NOT-exposed set explicitly.** A short
+  table — `hostname · backend · auth · manifest` — plus a list of "internal-only" datastores
+  and admin ports. Readers (and auditors) need the negative space as much as the positive.
+- **Ground to the deploy source, not the app code.** Edges and boundaries cite the things
+  that actually define them: ingress/Service manifests, IaC (DNS records, LB config), reverse
+  proxy config, firewall/security-group rules. Pin them like any other claim.
+- **Never copy a secret into the page.** Deploy/edge configs often contain credentials —
+  reference the file and the *mechanism* (e.g. "creds via env/secret store"), never the
+  value. If you find a plaintext secret while reading, report it to the user out-of-band;
+  do not render it.
+
+This is its own figure, distinct from the architecture diagram (logical components) and the
+dependency graph (who-needs-whom): it answers *where does this run and what can reach it*.
+
 ## Ground every claim to code (clickable)
 
 A picture the human can't verify is a liability. Make claims droppable to source:

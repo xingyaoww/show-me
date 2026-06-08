@@ -46,14 +46,22 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
    multi-package or multi-service codebases where the *coupling structure* (which one hard
    dependency couples everything vs. what's decoupled behind calls/stores) is the insight.
    For a single tightly-coupled package this collapses into section 5 — cut it.
-7. **Where to start (reading guide)** — rank the handful of files a newcomer should read
+7. **Deployment & network topology** *(if the repo ships to a real environment)* — where it
+   runs and what can reach it: DNS → edge (TLS / LB) → internal transport → cluster ingress
+   → workload → datastore, with an explicit **trust boundary** (public vs internal) and
+   exposure/auth marked at each hop. Back it with an exposed-surface table (`hostname ·
+   backend · auth · manifest`) and an explicit internal-only list. Ground to deploy sources
+   (ingress manifests, IaC, proxy/firewall config), and **never render a secret** — see the
+   deployment-topology technique in [`html-craft.md`](html-craft.md). Skip for a pure
+   library / CLI with no deploy surface.
+8. **Where to start (reading guide)** — rank the handful of files a newcomer should read
    first, by *importance*, not directory order. Approximate importance by fan-in (how many
    modules import/call it), centrality on the spine, and size of responsibility — the
    entrypoint, the core type, the orchestrator. Then "want to change X? start at `file`"
    task→location pointers so the reader can act after reading. (DeepWiki-style tools rank
    this with PageRank over the import graph; a careful manual read of "what does everything
    depend on" gets you the same top-5.)
-8. **(optional) Notable choices / gotchas** — non-obvious design decisions or sharp edges
+9. **(optional) Notable choices / gotchas** — non-obvious design decisions or sharp edges
    worth flagging, only if you actually found them in code/docs.
 
 ## Emphasis
