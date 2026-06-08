@@ -112,6 +112,95 @@ Two ways to show before/after:
 1. **Side-by-side figures** in a `.ba` grid — `<figure>` "Before" | `<figure>` "After". Best when layouts differ a lot.
 2. **One overlaid figure** — existing nodes dashed-gray, new nodes/edges solid-accent + orange delta, in the same coordinate space. Best when the change is *additive* to an existing structure (most legible "what's new" read).
 
+## Dependency / relationship graphs (typed edges)
+
+A common ask is "draw the dependency graph" — who imports whom, who calls whom, who
+shares a store. A plain box-and-arrow blob fails here: the reader can't tell *what kind*
+of dependency each arrow is, and an all-to-all graph degenerates into a hairball. The
+technique that works: **color the edge by its KIND, and make the kind legible from a
+legend.** The arrow's existence is half the information; its *type* is the other half.
+
+**Encode edge kind, not just direction.** Pick a small fixed vocabulary of dependency
+kinds and give each one a distinct stroke. A typical set for a software graph:
+
+```html
+<defs>
+ <marker id="m-imp" .../> <marker id="m-call" .../> <marker id="m-store" .../>
+ <style>
+  .imp  {stroke:#2b4eaa;stroke-width:2;fill:none}                 /* code import / compile-time type dep */
+  .call {stroke:#b25b0e;stroke-width:1.6;fill:none}              /* runtime service call (HTTP/RPC/queue) */
+  .store{stroke:#2f7a3a;stroke-width:1.4;fill:none;stroke-dasharray:5 3} /* shared datastore: write→store→read */
+  .build{stroke:#8a8a82;stroke-width:1.5;fill:none;stroke-dasharray:2 2} /* build / deploy / codegen */
+ </style>
+</defs>
+```
+
+The exact kinds depend on the system — adapt them (e.g. `inherits`, `event`, `config`,
+`generates`). The rule is: **one stroke style per kind, defined once, shown in a legend
+the reader can't miss.** A graph with three arrow colors and no legend is a worse graph
+than one with prose.
+
+**Discipline for a readable dep graph:**
+- **Distinguish nodes too.** Color/shape nodes by group (layer, owner, runtime, package)
+  so clusters read at a glance. Give stores/externals a different shape than code units.
+- **Direction = "depends on".** Be consistent: arrow points from the dependent to the
+  thing it needs. State the convention in the legend (people assume both directions).
+- **Kill the hairball.** If everything depends on everything, you're drawing at the wrong
+  altitude — collapse leaf nodes into their package, or split into two figures (e.g. a
+  runtime-dependency figure and a build/deploy figure, which often point opposite ways).
+  Don't draw an edge that's true of *every* node (e.g. "everything logs") — it's noise.
+- **Ground the edges, not just the nodes.** The high-value move: back the graph with a
+  small **dependency matrix** table — `from → to · kind · path:line` — where each row links
+  to the import statement / call site / config that *proves* the edge. The picture shows
+  shape; the table lets the reader verify any single edge.
+- **Call out the load-bearing edge.** Often one or two edges are the real coupling (a hard
+  compile-time dependency) while the rest are decoupled (calls/stores). Make those visually
+  loudest and say so — that's the insight a newcomer actually needs.
+- A relationship you can't tie to a real import/call/config is a *conjecture* — style it
+  differently (lighter / dotted) and label it, or leave it out.
+
+Mermaid can do a quick `graph LR` for a throwaway dep sketch, but it can't color edges by
+kind cleanly or hold a hand-tuned layout — for the carrying dependency figure, hand-SVG wins.
+
+## Deployment / network topology (trust boundaries)
+
+When the repo ships to a real environment — anything with public ingress, TLS, load
+balancers, a VPN/overlay, multiple hosts/clusters, managed datastores — *how it's deployed
+and what's reachable from where* is part of understanding it, and a security-relevant part.
+Draw it as a left-to-right **topology with an explicit trust boundary**:
+
+```
+[ public ]  │  [ internal / overlay ]
+ client → DNS → edge (TLS / LB / WAF) │ → cluster ingress → service → datastore
+                                      ▲ trust boundary (draw it as a line)
+```
+
+What makes this diagram useful rather than decorative:
+- **Draw the trust boundary as a literal line** (dashed, loud color) separating "public /
+  untrusted" from "internal / overlay / private". The single most important thing a reader
+  takes away is *what is exposed vs. what is not*.
+- **Tier the path the way packets actually flow:** DNS (which provider, which record →
+  which IP) → edge (reverse proxy / LB / CDN, where TLS terminates) → internal transport
+  (VPN / overlay / private subnet) → cluster ingress → workload → datastore. One column per
+  tier reads cleanly.
+- **Mark exposure and auth at each boundary**, not just connectivity: which hostnames are
+  public, where TLS terminates, which ingress is behind an auth gateway/SSO vs. open, what
+  is reachable *only* on the internal network. A glyph legend works (🔒 authed · 🔑
+  self-auth · ⚠ open).
+- **State the exposed surface explicitly, and the NOT-exposed set explicitly.** A short
+  table — `hostname · backend · auth · manifest` — plus a list of "internal-only" datastores
+  and admin ports. Readers (and auditors) need the negative space as much as the positive.
+- **Ground to the deploy source, not the app code.** Edges and boundaries cite the things
+  that actually define them: ingress/Service manifests, IaC (DNS records, LB config), reverse
+  proxy config, firewall/security-group rules. Pin them like any other claim.
+- **Never copy a secret into the page.** Deploy/edge configs often contain credentials —
+  reference the file and the *mechanism* (e.g. "creds via env/secret store"), never the
+  value. If you find a plaintext secret while reading, report it to the user out-of-band;
+  do not render it.
+
+This is its own figure, distinct from the architecture diagram (logical components) and the
+dependency graph (who-needs-whom): it answers *where does this run and what can reach it*.
+
 ## Ground every claim to code (clickable)
 
 A picture the human can't verify is a liability. Make claims droppable to source:
