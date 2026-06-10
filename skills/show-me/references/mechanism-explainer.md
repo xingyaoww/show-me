@@ -53,7 +53,12 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
    are inspected but do not affect output, accent boxes for candidates/output, and
    orange dashed edges for fallback or surprising branches.
 6. **What does not happen** - explicit non-examples. This prevents the reader from
-   inferring behavior from names or nearby data that the code never uses.
+   inferring behavior from names or nearby data that the code never uses. When the confusion
+   isn't a stray input but a whole *wrong mental model* the reader likely holds ("I assumed X
+   and Y were separate passes"), draw a **misconception-correction** figure (the wrong model
+   muted on the left, the real one accent on the right, mapping arrows between — see craft ref)
+   instead of just listing non-examples. Only do this for a misreading you've actually seen, not
+   a strawman.
 7. **Source map** - small table from rule -> symbol/test -> link.
 8. **Validation** - focused test command and result, or a clear note that validation
    was not run.

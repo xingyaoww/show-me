@@ -13,8 +13,12 @@ Calm, readable, document-like — not a dark dashboard. Skeleton:
 <title>{{Title}}</title>
 <style>
   :root{
-    --fg:#1a1a1a; --muted:#5a5a5a; --bg:#fdfdfb; --accent:#2b4eaa; --accent-soft:#e6ecfa;
-    --rule:#e2e2dc; --code-bg:#f3f1ec; --warn:#b25b0e; --ok:#2f7a3a; --crit:#a02020;
+    /* single source of truth — prose AND inline-SVG fills both read these (see SVG section) */
+    --fg:#1a1a1a; --muted:#5a5a5a; --subtle:#8a8a82;      /* 3 text weights: title · detail · sublabel */
+    --bg:#fdfdfb; --card:#ffffff; --elevated:#f7f6f1;     /* page · node fill · raised band/pill */
+    --accent:#2b4eaa; --accent-soft:#e6ecfa;
+    --rule:#e2e2dc; --rule-strong:#bdbcb4;                /* hairline · emphasized border */
+    --code-bg:#f3f1ec; --warn:#b25b0e; --ok:#2f7a3a; --crit:#a02020;
     --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
   }
@@ -67,6 +71,21 @@ Calm, readable, document-like — not a dark dashboard. Skeleton:
 Numbered sticky TOC + one-paragraph mental model up top + sectioned body. No JS needed
 for this shell.
 
+## Callouts (give them semantic types)
+
+The `.callout` / `.callout.warn` / `.callout.note` styles aren't interchangeable — assign
+each a fixed job and the reader learns to skim by them:
+
+- **`★` key takeaway** (accent) — the one load-bearing sentence of a section. At most one per
+  section; it's what the reader should remember if they read nothing else.
+- **`ⓘ` note** (`.note`, muted) — a reading hint for a figure, an aside, a "why we did it this
+  way" that isn't on the critical path.
+- **`⚠` warning** (`.warn`) — a boundary, a risk, a gotcha, a guardrail: trust boundaries,
+  "this does NOT do X", "never commit the secret". Reserve it for things that bite.
+
+Don't let callouts become wallpaper — if every paragraph is a colored box, none of them carry
+weight. A glyph prefix (`★ ⓘ ⚠`) makes the type legible before the reader parses the text.
+
 ## Hand-drawn SVG figures (the diagrams that carry the argument)
 
 Draw bespoke inline `<svg viewBox="0 0 W H">` with a `<defs>` for arrow markers and a
@@ -74,31 +93,65 @@ scoped `<style>`. You place every box → before/after stays aligned, legible, a
 delta is unmistakable. Semantic class system:
 
 ```html
-<svg viewBox="0 0 960 460" role="img" aria-label="...">
+<svg viewBox="0 0 960 460" role="img" aria-labelledby="f1-t f1-d">
+ <title id="f1-t">moduleA call path — before vs after</title>
+ <desc id="f1-d">Old direct call is replaced by a routed path through the new resolver.</desc>
  <defs>
+  <!-- one marker per semantic color; marker fills read the page palette -->
   <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-    <path d="M0,0 L10,5 L0,10 Z" fill="#2b4eaa"/></marker>
+    <path d="M0,0 L10,5 L0,10 Z" fill="var(--accent)"/></marker>
   <marker id="arr-chg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-    <path d="M0,0 L10,5 L0,10 Z" fill="#b25b0e"/></marker>
+    <path d="M0,0 L10,5 L0,10 Z" fill="var(--warn)"/></marker>
+  <!-- subtle "elevated" wash for the box that is the figure's subject -->
+  <linearGradient id="subj" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="var(--accent)" stop-opacity=".10"/>
+    <stop offset="1" stop-color="var(--accent)" stop-opacity=".02"/></linearGradient>
   <style>
-    .existing{fill:#f3f1ec;stroke:#8a8a82;stroke-width:1.4;stroke-dasharray:5 3}  /* before / pre-existing */
-    .ex-title{font:700 13px sans-serif;fill:#5a5a5a} .ex-detail{font:11.5px sans-serif;fill:#5a5a5a}
-    .new{fill:#e6ecfa;stroke:#2b4eaa;stroke-width:2}                              /* after / added */
-    .new-title{font:800 13px sans-serif;fill:#2b4eaa} .detail{font:11.5px sans-serif;fill:#1a1a1a}
-    .edge{stroke:#2b4eaa;stroke-width:1.5;fill:none}
-    .edge-chg{stroke:#b25b0e;stroke-width:1.8;fill:none;stroke-dasharray:5 3}     /* the changed / new flow */
-    .lbl{font:600 10.5px sans-serif;fill:#2b4eaa} .gap{font:700 11.5px sans-serif;fill:#b25b0e}
+    /* every fill/stroke is a --token: the palette lives once, in :root — prose & figures can't drift */
+    .existing{fill:var(--code-bg);stroke:var(--subtle);stroke-width:1.4;stroke-dasharray:5 3} /* before */
+    .ex-title{font:700 13px var(--sans);fill:var(--muted)} .ex-detail{font:11.5px var(--mono);fill:var(--subtle)}
+    .new{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}                         /* after / added */
+    .new-title{font:800 13px var(--sans);fill:var(--accent)} .detail{font:11.5px var(--mono);fill:var(--fg)}
+    .edge{stroke:var(--accent);stroke-width:1.5;fill:none}
+    .edge-chg{stroke:var(--warn);stroke-width:1.8;fill:none;stroke-dasharray:5 3}             /* the delta */
+    .lbl{font:600 10.5px var(--mono);fill:var(--accent)} .gap{font:700 11.5px var(--mono);fill:var(--warn)}
   </style>
  </defs>
- <rect class="existing" x="40" y="60" width="180" height="74" rx="6"/>
- <text class="ex-title" x="130" y="90" text-anchor="middle">moduleA.fn()</text>
- <text class="ex-detail" x="130" y="110" text-anchor="middle">old behavior · a.py:42</text>
- <rect class="new" x="300" y="60" width="180" height="74" rx="6"/>
- <text class="new-title" x="390" y="90" text-anchor="middle">moduleA.fn()</text>
- <path class="edge-chg" d="M220,97 L300,97" marker-end="url(#arr-chg)"/>
- <text class="gap" x="260" y="88" text-anchor="middle">new path</text>
+ <!-- ===== BEFORE: direct call ===== -->
+ <g>
+  <rect class="existing" x="40" y="60" width="180" height="74" rx="6"/>
+  <text class="ex-title"  x="130" y="90"  text-anchor="middle">moduleA.fn()</text>
+  <text class="ex-detail" x="130" y="110" text-anchor="middle">old behavior · a.py:42</text>
+ </g>
+ <!-- ===== AFTER: routed call (the change) ===== -->
+ <g>
+  <rect class="new" x="300" y="60" width="180" height="74" rx="6"/>
+  <text class="new-title" x="390" y="90" text-anchor="middle">moduleA.fn()</text>
+  <path class="edge-chg" d="M220,97 L300,97" marker-end="url(#arr-chg)"/>
+  <!-- pill behind an on-edge label so it stays legible over the line -->
+  <rect x="236" y="79" width="48" height="16" rx="5" fill="var(--elevated)" stroke="var(--rule)"/>
+  <text class="gap" x="260" y="91" text-anchor="middle">new path</text>
+ </g>
 </svg>
 ```
+
+**Five craft moves in that skeleton — they're what make a figure read like a designed
+diagram instead of a sketch:**
+- **Drive every fill/stroke from `var(--token)`.** Define the palette once in `:root`; the
+  SVG references it. One source of truth — prose and figures stay in lockstep, and a palette
+  tweak reflows every diagram. Never paste a raw hex into a figure.
+- **Three text weights, always the same three.** `--fg` for the node title (the real symbol),
+  `--muted` for the detail line, `--subtle` for sublabels/`path:line`. The eye sorts the
+  hierarchy without reading. Mixing weights ad-hoc is what makes a diagram look noisy.
+- **`<title>` + `<desc>` with `aria-labelledby`.** Not decoration: it's the figure's own
+  caption-of-record (screen readers, and a note-to-self of what the figure claims).
+- **A gradient wash marks the subject.** The one container the figure is *about* gets the
+  `#subj` wash (accent 10%→2%); everything else is flat. The reader's eye lands on the
+  protagonist before reading a word.
+- **`<g>` groups + `<!-- section -->` comments + on-edge label pills.** Author the SVG like
+  code: one `<g>` per logical unit, a comment naming it, and a small `rect` pill behind any
+  label that sits on a line (a bare label over an edge turns to mush). It stays editable when
+  you revise the layout three times.
 
 **The before/after encoding (use consistently):**
 - **dashed gray** (`.existing`, `.edge` muted) = what was there before / unchanged context.
@@ -111,6 +164,23 @@ diagram is already half-grounded to code.
 Two ways to show before/after:
 1. **Side-by-side figures** in a `.ba` grid — `<figure>` "Before" | `<figure>` "After". Best when layouts differ a lot.
 2. **One overlaid figure** — existing nodes dashed-gray, new nodes/edges solid-accent + orange delta, in the same coordinate space. Best when the change is *additive* to an existing structure (most legible "what's new" read).
+
+## Caption every figure, and hint how to read the hard ones
+
+A figure with no caption makes the reader reverse-engineer your intent. Two cheap habits
+fix it:
+
+- **The `<figcaption>` states the takeaway, not a label.** Not "Architecture diagram" —
+  *"Requests never touch the DB directly; every write goes through the queue."* The caption
+  is the one sentence you'd say pointing at the figure. Number them (`Fig 3 ·`) and
+  **cross-reference between figures** (`state machine in Fig 2`, `evolve timing in Fig 5`) so
+  a multi-figure report reads as one system at different altitudes, not five loose pictures.
+- **For a figure with a non-obvious convention, add a one-line reading hint** in a `.callout.note`
+  right under it, naming the single thing that unlocks it: *"Every arrow enters or leaves the
+  bus — there are no agent-to-agent arrows, because the protocol is 'read/write the bus'."*
+  One sentence that says *how to look* saves the reader a minute of squinting. Put the hint in
+  the figure too when you can — an in-diagram `→ §3.2 / Fig 2` link (accent mono) turns the
+  picture into a table of contents.
 
 ## Dependency / relationship graphs (typed edges)
 
@@ -200,6 +270,88 @@ What makes this diagram useful rather than decorative:
 
 This is its own figure, distinct from the architecture diagram (logical components) and the
 dependency graph (who-needs-whom): it answers *where does this run and what can reach it*.
+
+**The boundary line generalizes past the network.** Any time a system has a *trust /
+privilege / writability* boundary — what an agent may write vs. a trusted evaluator's files,
+user code vs. kernel, tenant vs. control-plane, untrusted input vs. sanitized — draw it as
+one explicit loud line and **label both sides**, exactly like the public/internal split.
+What's inside vs. outside the boundary is usually the security-relevant fact the reader needs;
+don't bury it inside a generic component box.
+
+## Swimlane lifecycle (actor lanes × stages)
+
+When the question is *"how does one thing move through several actors over time"* — a task
+through dev→review→QA, a request through services, an order through a fulfillment pipeline —
+the right figure is a **swimlane**: horizontal **stages** (time →) crossed with one **lane per
+actor**. A plain flowchart loses *who owns each step*; the swimlane encodes it as vertical
+position.
+
+- **Lanes = actors, columns = stages.** Put the actor labels in a left rail; draw faint
+  horizontal lane dividers and faint vertical stage dividers so the grid reads.
+- **Carry a second dimension as a shared color code.** Color each box by the *module/resource*
+  it touches (e.g. source=accent, CI=amber, tests=green) and reuse that exact code in every
+  figure and table — one legend, used everywhere. Now a glance shows both *who acts* (lane)
+  and *what they touch* (color).
+- **Happy path solid, back-flow dashed-orange.** The forward path is solid; rejections,
+  retries, and regressions are dashed-orange edges that jump lanes/stages backward — the
+  reader sees the loops without tracing them.
+- **A strip along the bottom for a third axis.** A thin band under the lanes can track the
+  environment/phase each stage runs in (local → ephemeral → staging). Optional, but it adds a
+  whole dimension for ~20px of height.
+- **Out-of-band work sits in a dashed-off side region**, not jammed into the timeline (e.g. a
+  cron/periodic column fenced off on the right) — it isn't part of the per-item flow.
+
+## State machines (states, guards, sub-states)
+
+For a label/status machine, a resolver, a retry policy, a lifecycle — draw **states as nodes,
+transitions as edges labeled `trigger / guard`**. The value is in the edge labels and the
+terminal markers, not the boxes.
+
+- **Label every edge with what fires it** (`approve`, `qa_failed`, `timeout > 10m`). An
+  unlabeled transition is the reader's main unanswered question.
+- **Mark terminal vs. non-terminal states** distinctly (double border / accent fill for
+  terminal). "Where can this get stuck?" is answered by which non-terminal states have no
+  cheap exit.
+- **Sub-states earn their keep when they change routing.** If `needs-changes` splits into
+  `:reviewer` (must re-review) vs. `:qa` (skip back), draw them as two nodes — the whole point
+  is that they route differently. Don't split states that behave identically.
+- **Color edges by which actor drives them** (reuse the actor palette). The reader sees who
+  causes each transition.
+- Hand-SVG for the carrying machine; Mermaid `stateDiagram` is fine for a throwaway.
+
+## Capability / ownership matrix (who can touch what)
+
+When the insight is *who owns / may write / is responsible for* each component — a RACI,
+an agent's writable surface, per-module ownership — a **2-D matrix beats a graph**: actors
+down the rows, components across the columns, a **glyph in each cell**. A dependency graph
+answers "who calls whom"; the matrix answers "who is *allowed*", which a graph can't show.
+
+- **One glyph per capability level, with a legend the reader can't miss** — e.g.
+  `● primary · ◐ secondary · ○ read-only · · n/a`. Glyphs (not just color) so it survives
+  grayscale and conveys an *ordering*.
+- **Make the empty cells say something.** A blank/`·` cell is a claim ("this actor can't
+  touch this") — that negative space is often the security-relevant part.
+- **Put the trusted/forbidden surface adjacent.** If some components are outside everyone's
+  writable boundary (a hidden evaluator, a control plane), give them their own row/column or a
+  footnote — the matrix is the natural place to state the boundary precisely.
+- A clean HTML `<table>` with glyph cells is usually better than an SVG here; reserve SVG for
+  when you want to cluster rows/columns visually.
+
+## Misconception-correction (the wrong model, beside the right one)
+
+Often the reader arrives with a *plausible-but-wrong* mental model, and the explanation's real
+job is to **replace it**. Draw the misconception on the left and reality on the right, with
+mapping arrows between — a targeted upgrade of "show before/after", aimed at the reader's head
+rather than the code.
+
+- **Left = the intuitive model, clearly fenced and muted** (dashed gray, a "🤔 intuition" or
+  "what you might assume" header) so no one mistakes it for the answer.
+- **Right = the actual model, solid-accent**, with arrows from each wrong piece to what it
+  *actually* maps to ("two separate boards" → "one issue, three views").
+- **End with the one-line difference that resolves it**, in a `★` callout: the single sentence
+  that, once understood, makes the wrong model collapse.
+- Use this when you've seen the confusion be real (a teammate asked, a comment thread argued
+  it). Don't invent a strawman to knock down — that wastes the reader's attention.
 
 ## Ground every claim to code (clickable)
 
