@@ -36,9 +36,15 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
    defining file. This is usually the highest-leverage section.
 4. **Lifecycle / main flow** — the spine from step 2 as a sequence or flow SVG: request
    in → … → result out, or job trigger → phases → outputs. Ground each step to the
-   function that does it.
+   function that does it. If the flow hands off across several actors/services/roles, draw it
+   as a **swimlane** (actor lanes × stages, see craft ref) so *who owns each step* is visible;
+   if the spine is really a status/label/lifecycle machine, draw it as a **state machine**
+   (states + `trigger / guard` edges).
 5. **Components** — short subsection per major piece: its job, key entry symbol, what it
-   depends on, `path:line`. A table works well.
+   depends on, `path:line`. A table works well. When *ownership / who-may-modify-what* is part
+   of understanding it (multi-role repos, plugin surfaces, agent-writable vs. trusted areas), a
+   **capability matrix** (actor × component with a glyph legend, see craft ref) states it more
+   precisely than prose.
 6. **Dependency graph** — *who depends on whom*, drawn as a typed-edge graph (color the
    edges by kind: import vs runtime call vs shared store vs build/deploy — see the
    dependency-graph technique in [`html-craft.md`](html-craft.md)). Back it with a
@@ -63,6 +69,11 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
    depend on" gets you the same top-5.)
 9. **(optional) Notable choices / gotchas** — non-obvious design decisions or sharp edges
    worth flagging, only if you actually found them in code/docs.
+10. **(optional) Scope / non-goals** — for a system or design-doc-shaped repo, an explicit
+    *what it does* / *what it deliberately does NOT do* (two columns) plus, if the repo defines
+    them, the success criteria. The negative space — the thing a newcomer assumes is in scope
+    but isn't — prevents a class of misreadings. Only include what the code/docs actually state;
+    don't invent non-goals.
 
 ## Emphasis
 
@@ -73,6 +84,12 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
   after the picture is to open the code; make that one click.
 - **One architecture SVG beats five paragraphs.** Spend effort on the top-level diagram —
   it's what the reader screenshots and remembers.
+- **Figures as a system, not a pile.** Give each figure a *distinct altitude and question* —
+  architecture (what's nested in what) · lifecycle (how one thing flows) · state (how status
+  transitions) · dependency (who needs whom) · ownership (who may touch what). Cross-reference
+  them (`see Fig 2 for the state machine`) and reuse one shared color/glyph legend across all
+  of them. Redrawing the same boxes at the same altitude five times is filler; five figures at
+  five altitudes is a tour.
 - **Don't invent.** If the code doesn't show it, don't claim it. Mark inferences as such.
 - **Match depth to the ask.** Default to *comprehensive* (every major subsystem gets a
   section + diagram). If the reader wants a fast orientation, do a *concise* pass: just the
