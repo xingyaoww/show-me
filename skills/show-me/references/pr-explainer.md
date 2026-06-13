@@ -31,14 +31,16 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
 
 ## Report sections
 
-1. **What changed (big picture)** — one paragraph: the intent and the net effect. Stats
-   (`N files · +A / −D`). If there's a cross-file flow, the **overview before/after SVG**
+1. **What changed (decision first)** — one paragraph: the intent, net effect, and why
+   the reader should care. Put the highest-impact conclusion or risk in a `★` callout,
+   with the most important changed `path:line` nearby. Stats (`N files · +A / −D`) are
+   context, not the lead. If there's a cross-file flow, the **overview before/after SVG**
    goes here: existing structure in dashed gray, the change in solid accent + orange delta
    (see craft ref's encoding).
 2. **Left rail / index** — the changed files grouped by area, each tagged
    (🟢 added · 🔴 removed · ✏️ changed · ⚙️ mechanical) with +/− counts; click to jump.
 3. **Per-file cards** — for each logical file:
-   - one-line summary of how its behavior changed;
+   - claim-carrying title + one-line summary of how its behavior changed;
    - **before / after** diagrams (side-by-side `.ba`, or one overlaid figure) with real
      symbol names + `file:line`, the changed nodes/edges in orange;
    - the diff in a collapsed `<details>` (HTML-escaped, lightly highlighted).
@@ -51,10 +53,12 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
   before/after diagrams alone, without opening a single diff. Make the changed path
   visually loud (orange dashed); keep unchanged context muted (dashed gray).
 - **Ground to the changed lines.** Node detail lines and card headers link to
-  `path:line` at the head SHA (clickable blob URL). One click from "this node changed" to
-  the exact code.
+  `path:line` at the head SHA (clickable blob URL). Put source links beside the behavior
+  claim they prove. One click from "this node changed" to the exact code.
 - **Before AND after, always, for logic changes.** Never show only the new state when
   something was replaced — the contrast is the whole point.
 - **Mechanical ≠ logic.** Constants/renames/config get a table row, not a flowchart.
 - **Don't re-implement GitHub.** If all you'd produce is the file list + raw diff, you've
   added nothing. The value is the synthesized before/after picture grounded to code.
+- **No process-first writeup.** The reader does not need a diary of inspected files. They
+  need the conclusion, the changed path, the proof, and the verification trail.

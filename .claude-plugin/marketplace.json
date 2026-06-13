@@ -4,12 +4,12 @@
     "name": "Xingyao Wang",
     "email": "xingyaoww@gmail.com"
   },
-  "description": "Visualize code and changes as self-contained HTML — big picture + before/after, grounded to code.",
+  "description": "Visualize code, changes, and tricky mechanisms as skimmable self-contained HTML, grounded to code.",
   "plugins": [
     {
       "name": "show-me",
       "source": ".",
-      "description": "Turn a codebase or a change into one self-contained HTML page: big picture, before/after core difference, every claim clickable back to code.",
+      "description": "Turn a codebase, change, or tricky mechanism into one skimmable HTML page: big picture, before/after or trace, every claim grounded to code.",
       "displayName": "Show Me",
       "author": {
         "name": "Xingyao Wang",

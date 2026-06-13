@@ -1,11 +1,13 @@
 # show-me
 
 A skill for turning **code** and **changes** into a single self-contained HTML page that
-a human can read to *get it fast* — the big picture of a system, or the **before → after
-core difference** of a change — with every claim grounded to the actual code, one click away.
+a human can read to *get it fast* — the big picture of a system, the **before → after
+core difference** of a change, or the exact trace of a tricky mechanism — with every claim
+grounded to the actual code, one click away.
 
 Prose is slow and raw diffs are noise. A carefully drawn, code-grounded picture is fast.
-`show-me` is the methodology for producing that picture.
+`show-me` is the methodology for producing that picture. The guiding constraint is human
+attention: spend extra agent effort so the result is skimmable, verifiable, and easy to act on.
 
 ## What it does
 
@@ -17,6 +19,7 @@ serving) lives in one place.
 | Dimension | When | Output |
 |---|---|---|
 | **[Understand a new repo](skills/show-me/references/repo-explainer.md)** | First time in a codebase — don't know what it is or how it works | Comprehensive report: mental model → architecture → flows → components, grounded to files |
+| **[Understand a mechanism](skills/show-me/references/mechanism-explainer.md)** | One pipeline, parser, resolver, scheduler, state machine, ranking rule, or other branchy logic is confusing | Focused walkthrough: boundary → rules → worked trace → non-examples → validation |
 | **[Understand a change](skills/show-me/references/pr-explainer.md)** | Already know the repo; a PR / diff / branch needs explaining | Change report: big-picture impact + **before/after** diagrams of the affected logic, diffs collapsed, grounded to code |
 
 Shared craft: **[references/html-craft.md](skills/show-me/references/html-craft.md)**.
@@ -24,19 +27,22 @@ Shared craft: **[references/html-craft.md](skills/show-me/references/html-craft.
 ## The form
 
 - **One self-contained HTML file** — no build, opens by double-click, survives copy to another machine.
+- **Skimmable first screen** — conclusion, mental model, where to jump, and evidence are visible before the reader commits to a full read.
 - **Editorial document**, light theme: readable width, numbered sticky table of contents, sections, callouts — read top to bottom, not a dashboard of widgets.
 - **Hand-drawn inline SVG** for the diagrams that carry the argument — you control layout, so before/after stays aligned and the *delta* is unmistakable (dashed-gray = before/context, solid-accent = after, orange = the change). Mermaid only for quick auxiliary graphs.
-- **Grounded to code** — every box names a real symbol + `path:line` and links back to the source (GitHub blob at a pinned SHA, or local file). Picture → code in one click.
-- **Served for cross-machine viewing** — handed back as a LAN / tunnel IP URL.
+- **Grounded to code** — every box names a real symbol + `path:line` and links back to the source (GitHub blob at a pinned SHA, or local file). Evidence sits beside the claim it proves. Picture → code in one click.
+- **Served for cross-machine viewing** — preferably an `htmlpreview.github.io` link to
+  a pushed self-contained page, with LAN / tunnel HTTP as the local fallback.
 
 ## Principles
 
-1. Big picture first; depth on demand (collapsed / linked).
-2. Show the *difference*, not just the after-state.
-3. Ground everything to real code.
-4. Hand-draw the diagrams that carry the argument.
-5. Self-contained & offline.
-6. Editorial, not dashboard.
+1. Optimize for scarce human attention: skimmable, verifiable, decision-first.
+2. Big picture first; depth on demand (collapsed / linked).
+3. Show the *difference*, not just the after-state.
+4. Ground every claim to real code, adjacent to the claim.
+5. Hand-draw the diagrams that carry the argument.
+6. Self-contained & offline.
+7. Editorial, not dashboard.
 
 ## Install
 

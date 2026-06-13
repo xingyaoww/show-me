@@ -71,6 +71,41 @@ Calm, readable, document-like — not a dark dashboard. Skeleton:
 Numbered sticky TOC + one-paragraph mental model up top + sectioned body. No JS needed
 for this shell.
 
+## First screen: 15-second orientation
+
+The reader's attention is the budget. The first viewport should answer four questions
+without requiring a full read:
+
+1. **What is this?** A one-paragraph mental model in the title subtitle.
+2. **Why does it matter?** The highest-impact conclusion, risk, or action in a `★`
+   callout near the top.
+3. **Where should I jump?** A numbered sticky TOC whose labels carry information, not
+   just categories.
+4. **Why should I trust it?** Nearby source links (`path:line`, test, command, commit,
+   or fixture) for the first substantive claim.
+
+Do not open with "I read these files" or a chronological work log. Start with the
+reader's decision: what changed, how the system works, what path matters, or where to
+look next. Put methods, command output, and raw diffs behind `<details>` unless they
+are the point of the report.
+
+## Skimmable structure
+
+Design the page so a busy reader can scan headings, captions, callouts, and tables
+before choosing where to dive:
+
+- **Headings make claims.** Prefer "Writes only cross the queue" over "Architecture",
+  when the section has a specific finding. Generic labels are acceptable only when the
+  title/subtitle already carries the finding.
+- **One paragraph, one judgment.** Keep paragraphs short; split when a sentence starts
+  proving a different point.
+- **Number parallel points.** If you say "three rules" or "two risks", number them so
+  the reader can reconcile the claim with the list.
+- **Use tables only for stable comparison axes.** A table should reduce cognitive
+  work, not force subtle judgments into neat boxes.
+- **Make captions do work.** A caption states the takeaway of the figure, not merely
+  its type.
+
 ## Callouts (give them semantic types)
 
 The `.callout` / `.callout.warn` / `.callout.note` styles aren't interchangeable — assign
@@ -361,6 +396,10 @@ A picture the human can't verify is a liability. Make claims droppable to source
 - Render locations as `<a class="src" href="{{blobURL}}">path:line</a>` in node detail lines, section text, and a per-component "source" link.
 - For local-only / unpushed work, link `file://` absolute paths or just show `path:line` plainly.
 - Rule: if a box can't be tied to a symbol+location, it's a *concept* box — style it differently and say so; don't fake a link.
+- Put evidence beside the claim it supports. The reader should not have to scroll to a
+  bibliography to verify a behavior statement, edge, risk, metric, or test result.
+- Commands count as evidence when behavior must be observed: show the command and the
+  relevant result near the claim, with full logs collapsed if noisy.
 
 ### Grounding discipline (borrowed from DeepWiki)
 

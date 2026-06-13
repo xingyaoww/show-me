@@ -23,14 +23,19 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
    solves, the core abstraction, the shape (e.g. "event pipeline", "layered service",
    "compiler"). This leads the page.
 5. **Draw, then write.** Top-level architecture SVG first; then per-section detail.
+   The opening screen must orient and route: the mental model, the most important
+   diagram, and links to the handful of sections/files worth reading first.
 
 ## Report sections (adapt; cut what doesn't apply)
 
-1. **What it is** — the one-paragraph mental model + a 1-line "you are here" for each
-   top-level dir. The reader should be oriented before scrolling.
-2. **Architecture** — a hand-SVG of the major components and how they talk (processes,
+1. **What it is / where to look first** — the one-paragraph mental model, the most
+   important "why this matters" takeaway, and a short reading route. A 1-line "you are
+   here" for each top-level dir can live here or in a compact table. The reader should
+   know whether to keep reading and where to jump before scrolling.
+2. **Architecture claim, not just architecture** — a hand-SVG of the major components and how they talk (processes,
    layers, services, stores). Each box = a real module/dir + `path` link. Show the
-   primary data/control direction with arrows.
+   primary data/control direction with arrows. The section title and figure caption
+   should state the architectural finding, not merely name the diagram.
 3. **The mental model / core abstractions** — the 2-4 types or concepts everything is
    built on (the central data structures, the key interface). Name them + link the
    defining file. This is usually the highest-leverage section.
@@ -80,8 +85,9 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
 - **Big picture first, depth on demand.** Lead with the model + architecture diagram;
   push deep detail into later sections, tables, or `<details>`.
 - **Ground relentlessly.** Every component, abstraction, and flow step links to its file
-  (`path:line`, clickable via the repo blob URL — see craft ref). A newcomer's first move
-  after the picture is to open the code; make that one click.
+  (`path:line`, clickable via the repo blob URL — see craft ref). Put links beside the
+  statement or table row they prove. A newcomer's first move after the picture is to open
+  the code; make that one click.
 - **One architecture SVG beats five paragraphs.** Spend effort on the top-level diagram —
   it's what the reader screenshots and remembers.
 - **Figures as a system, not a pile.** Give each figure a *distinct altitude and question* —
@@ -95,3 +101,6 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
   section + diagram). If the reader wants a fast orientation, do a *concise* pass: just the
   mental model, the one architecture diagram, and the reading guide — skip per-component
   detail. State which mode you produced.
+- **Optimize for skim paths.** A reader should be able to scan the TOC, captions, and
+  source-linked tables to decide which subsystem deserves attention without reading the
+  whole page.
