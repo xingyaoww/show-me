@@ -130,7 +130,8 @@ Semantic PR reports must pass a coverage gate.
 
 1. Build a symbol manifest for every changed source file.
 2. Include every class, function, and method in the manifest.
-3. Every symbol must appear in the HTML as a card, table row, or graph node.
+3. Every symbol must appear in the HTML inside the review browser as a file-scoped
+   symbol row and an expandable card, or as an explicit removed-symbol row.
 4. Every HTML symbol instance must carry the stable `symbol.id`, preferably as
    `data-symbol-id="path.py::qualname"` and visibly as `path.py::qualname`.
 5. Every symbol must link to source evidence.
@@ -183,21 +184,66 @@ Each symbol card should be short and regular enough to skim like code:
 
 Keep cards dense. This is a code review surface, not marketing copy.
 
+## Review Browser Layout
+
+Do not present file coverage and symbol coverage as two separate flat matrices. That is
+complete but hard to review. The default semantic PR surface is a **review browser**:
+
+1. Put the high-level architecture / roadmap diagram first, before the browser.
+2. Keep global navigation as a compact top rail or a single left rail. Do not create a
+   full-page three-column layout (`toc + file tree + content`); it leaves too little room
+   for symbol cards.
+3. Inside the main content, create a two-column browser: left file tree, right file
+   panel. The file tree is local navigation, not a second document TOC.
+4. Group the file tree by real path directories. Each file tab shows status, +/-, and
+   symbol count.
+5. Each file panel starts with the file role and diff stats, then a collapsible symbol
+   list. Each symbol row shows status, qualname, kind, line, calls/called-by count, and
+   branch count.
+6. Each symbol row expands to the function/class card. The card should be visually
+   flat inside the row: avoid another heavy nested-card border or repeated heading.
+7. Deleted symbols stay in the same browser when their file is present, and also appear
+   in the removed-symbols section when useful. Do not hide deleted symbols just because
+   they have no head source link.
+8. On narrow screens, stack the file tree over the active file panel and left-align
+   symbol metadata. Long qualnames must wrap instead of pushing the panel wider.
+
+This replaces the old pattern of:
+
+```text
+File Matrix
+Symbol Coverage Matrix
+Symbol Cards
+```
+
+with:
+
+```text
+Review Browser
+  file tree
+    file
+      symbol rows
+        expandable symbol card
+```
+
+Flat matrices are still acceptable as collapsed raw verification artifacts, but they
+should not be the primary review UI.
+
 ## Report Sections
 
-1. **Semantic Delta First** - one paragraph explaining the architectural move, backed by
+1. **Architecture Before/After** - a high-level SVG where nodes are real files/classes/
+   functions and edges are `Relation.kind`. Changed nodes/edges are orange. Put this
+   early so the reader has the roadmap before drilling into files.
+2. **Semantic Delta** - one paragraph explaining the architectural move, backed by
    the top changed symbols and source links.
-2. **Coverage Matrix** - every changed file and every symbol. Columns:
-   `symbol id`, `kind`, `status`, `role`, `calls`, `called by`, `branches`, `covered`.
-3. **Architecture Before/After** - an overview SVG where nodes are real files/classes/
-   functions and edges are `Relation.kind`. Changed nodes/edges are orange.
+3. **Review Browser** - the primary coverage UI. It combines changed files, symbol
+   coverage, and symbol cards into one path-structured browser.
 4. **File Relationship Graph** - file-level import/call/persist edges. Back it with an
    edge table: `from -> to · kind · evidence`.
-5. **Symbol Cards** - one card per function/class/method, ordered by file and source line.
-6. **Removed Symbols** - deleted classes/functions/methods and what replaces them, if known.
-7. **Unresolved Relations** - unresolved calls/imports with source evidence. This is a
+5. **Removed Symbols** - deleted classes/functions/methods and what replaces them, if known.
+6. **Unresolved Relations** - unresolved calls/imports with source evidence. This is a
    useful limitation, not a failure, as long as it is explicit.
-8. **Raw Diff** - collapsed, for verification only.
+7. **Raw Diff** - collapsed, for verification only.
 
 ## Visual Encoding
 
@@ -215,7 +261,7 @@ Keep cards dense. This is a code review surface, not marketing copy.
 - Unchanged symbols in changed files: muted, but still present for coverage.
 
 Avoid one giant graph if the PR touches many symbols. Use a small overview plus the
-coverage matrix and per-file symbol cards.
+review browser.
 
 ## Reverse-Spec Discipline
 
