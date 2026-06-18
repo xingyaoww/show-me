@@ -20,7 +20,8 @@ serving) lives in one place.
 |---|---|---|
 | **[Understand a new repo](skills/show-me/references/repo-explainer.md)** | First time in a codebase — don't know what it is or how it works | Comprehensive report: mental model → architecture → flows → components, grounded to files |
 | **[Understand a mechanism](skills/show-me/references/mechanism-explainer.md)** | One pipeline, parser, resolver, scheduler, state machine, ranking rule, or other branchy logic is confusing | Focused walkthrough: boundary → rules → worked trace → non-examples → validation |
-| **[Understand a change](skills/show-me/references/pr-explainer.md)** | Already know the repo; a PR / diff / branch needs explaining | Change report: big-picture impact + **before/after** diagrams of the affected logic, diffs collapsed, grounded to code |
+| **[Understand a PR as reverse-spec code](skills/show-me/references/semantic-pr-explainer.md)** | Need every changed function/class/method represented one-to-one, with calls, callers, branches, inputs/outputs, and coverage checks | Semantic PR IR + HTML report: structured natural-language code grounded to symbols |
+| **[Understand a change](skills/show-me/references/pr-explainer.md)** | Already know the repo; a PR / diff / branch needs a concise explanation of the main delta | Change report: big-picture impact + **before/after** diagrams of the affected logic, diffs collapsed, grounded to code |
 
 Shared craft: **[references/html-craft.md](skills/show-me/references/html-craft.md)**.
 
@@ -89,8 +90,17 @@ git clone https://github.com/xingyaoww/show-me /tmp/show-me \
 Once installed, just ask in natural language — the agent routes via `SKILL.md`:
 
 - **"show me this repo"** / "help me understand this codebase" → new-repo report
+- **"show me this PR as function/class-level semantic code"** / "reverse-spec this PR" → semantic PR report with symbol coverage
 - **"show me what this PR changes — before vs after"** / "visualize this diff" → change report
 - **"visualize how X works"** → targeted diagram, grounded to code
+
+For Python PRs, the repo includes a small stdlib helper that can seed the semantic PR IR
+and enforce coverage against the generated HTML:
+
+```bash
+python skills/show-me/scripts/python_symbol_ir.py --base origin/main --head HEAD --output semantic-ir.json
+python skills/show-me/scripts/python_symbol_ir.py --base origin/main --head HEAD --check-coverage pr-semantic.html
+```
 
 The agent generates a self-contained HTML page and hands back a clickable link — ideally a
 `htmlpreview.github.io/?<github-blob-url>` link (push the page, click to view rendered, no

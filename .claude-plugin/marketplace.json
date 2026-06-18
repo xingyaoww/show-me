@@ -4,12 +4,12 @@
     "name": "Xingyao Wang",
     "email": "xingyaoww@gmail.com"
   },
-  "description": "Visualize code, changes, and tricky mechanisms as skimmable self-contained HTML, grounded to code.",
+  "description": "Visualize code, PRs, changes, and tricky mechanisms as skimmable self-contained HTML, grounded to code.",
   "plugins": [
     {
       "name": "show-me",
       "source": ".",
-      "description": "Turn a codebase, change, or tricky mechanism into one skimmable HTML page: big picture, before/after or trace, every claim grounded to code.",
+      "description": "Turn a codebase, PR, change, or tricky mechanism into one skimmable HTML page: big picture, reverse-spec symbol coverage, before/after or trace, every claim grounded to code.",
       "displayName": "Show Me",
       "author": {
         "name": "Xingyao Wang",
@@ -18,7 +18,7 @@
       "homepage": "https://github.com/xingyaoww/show-me",
       "repository": "https://github.com/xingyaoww/show-me",
       "license": "MIT",
-      "keywords": ["visualization", "diagrams", "code-review", "architecture", "onboarding", "svg", "mermaid"],
+      "keywords": ["visualization", "diagrams", "code-review", "architecture", "onboarding", "reverse-spec", "semantic-ir", "svg", "mermaid"],
       "category": "productivity"
     }
   ]

@@ -1,9 +1,13 @@
-# pr-explainer — make sense of a change
+# pr-explainer — summarize the core PR diff
 
 **Situation:** the reader already understands the repo; now a PR / diff / branch /
 uncommitted edit needs explaining. Produce a self-contained HTML report whose center of
 gravity is the **before → after core difference** of the affected logic — not a redraw of
 the end state, and not the raw diff. Diffs stay collapsed; the picture and the delta lead.
+
+This is the **summary PR view**. If the user asks for a complete function/class map,
+structured natural-language code, or a guarantee that no symbol was skipped, use
+[`semantic-pr-explainer.md`](semantic-pr-explainer.md) instead.
 
 Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
 
@@ -62,3 +66,6 @@ Build per [`html-craft.md`](html-craft.md). This file is *what to put in it*.
   added nothing. The value is the synthesized before/after picture grounded to code.
 - **No process-first writeup.** The reader does not need a diary of inspected files. They
   need the conclusion, the changed path, the proof, and the verification trail.
+- **Upgrade when completeness matters.** This file may collapse low-impact functions into a
+  concise narrative. For one-to-one function/class coverage, switch to the semantic PR
+  reverse-spec flow.

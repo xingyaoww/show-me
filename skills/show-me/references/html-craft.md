@@ -106,6 +106,33 @@ before choosing where to dive:
 - **Make captions do work.** A caption states the takeaway of the figure, not merely
   its type.
 
+## Review browser UI (file tree -> symbol rows -> cards)
+
+For a symbol-complete PR explanation, make the code drill-down feel like a PR review
+browser rather than a report full of matrices:
+
+- **Use one global navigation system.** If the page has a document TOC, keep it as a compact
+  top rail or a single left rail. Do not use a full-page `toc + file tree + content`
+  three-column layout; it squeezes the symbol cards and causes overflow.
+- **Make the file tree local to the browser.** The tree belongs inside the review browser,
+  beside the active file panel. It is not a second global TOC.
+- **Group by real path directories.** A flat file list is only marginally better than the
+  host UI. Directory grouping gives the reader the architecture shape before opening any file.
+- **Merge file and symbol coverage.** Each file tab carries file status, +/- stats, and symbol
+  count. Each file panel carries the file role plus collapsible symbol rows. Do not create
+  separate primary sections for "file matrix" and "symbol coverage matrix".
+- **Keep symbol rows shallow.** A row should show `status · qualname · kind · line · calls ·
+  called-by · branches`. Metadata must wrap or collapse; it must not push the panel wider.
+- **Flatten expanded cards.** When a symbol row expands, the card should become row content,
+  not a card inside a card. Hide repeated headings and rely on one status stripe/border.
+- **Handle deleted symbols explicitly.** Deleted functions/classes still need a row or a
+  removed-symbols entry with the base-source link and replacement note.
+- **Mobile stacks.** On narrow screens, stack the file tree over the file panel and left-align
+  symbol metadata.
+
+Flat matrices may live in collapsed verification details, but they should not be the primary
+reading path for a symbol-level PR.
+
 ## Callouts (give them semantic types)
 
 The `.callout` / `.callout.warn` / `.callout.note` styles aren't interchangeable — assign
