@@ -27,7 +27,8 @@ This file is an **index**. Read the dimension that matches the task, then read
 |---|---|---|
 | **New repo / system** — first time seeing it, don't know what it does or how it works | [`references/repo-explainer.md`](references/repo-explainer.md) | A comprehensive HTML report: what it is, the mental model, architecture, data/control flow, key components — enough to orient before touching code |
 | **Targeted mechanism / tricky logic** — user asks how one pipeline, extractor, state machine, scheduler, resolver, parser, scorer, or selection rule works | [`references/mechanism-explainer.md`](references/mechanism-explainer.md) | A focused walkthrough: exact inputs, state transitions, branch rules, worked examples, non-examples, outputs, and code links |
-| **A change** — already understand the repo; a PR / diff / branch / uncommitted edit needs explaining | [`references/pr-explainer.md`](references/pr-explainer.md) | A change report: big-picture impact + **before/after** diagrams of the affected logic, diffs collapsed, grounded to code |
+| **Semantic PR / reverse spec** — user asks to visualize an entire PR with every changed function/class represented, or asks for structured natural-language code | [`references/semantic-pr-explainer.md`](references/semantic-pr-explainer.md) | A coverage-checked Semantic PR IR + HTML report: every class/function/method maps to a card/node, with calls, callers, branches, inputs/outputs, and before/after behavior |
+| **Summary PR / diff** — already understand the repo; a PR / diff / branch / uncommitted edit needs a concise explanation of the main delta | [`references/pr-explainer.md`](references/pr-explainer.md) | A change report: big-picture impact + **before/after** diagrams of the affected logic, diffs collapsed, grounded to code |
 
 Both share the same craft (look, self-containment, before/after technique, code
 grounding, serving) — that lives in [`references/html-craft.md`](references/html-craft.md).
@@ -51,16 +52,20 @@ grounding, serving) — that lives in [`references/html-craft.md`](references/ht
    symbol + `path:line` and, when possible, is a clickable link back to the source
    (GitHub blob URL or local file). Put the evidence beside the sentence, table row,
    or figure it supports rather than burying sources at the end.
-6. **Hand-draw the important diagrams.** For the diagrams that carry the argument,
+6. **For semantic PRs, enforce symbol coverage.** If the user asks for a whole-PR
+   function/class view, build a symbol manifest first and make every changed class,
+   function, and method appear in the page. A missing symbol is a visualization bug,
+   not an acceptable simplification.
+7. **Hand-draw the important diagrams.** For the diagrams that carry the argument,
    prefer **bespoke inline SVG** — you control layout, and before/after stays aligned
    and legible. Mermaid is fine for quick/auxiliary graphs, but auto-layout fights you
    on careful comparisons.
-7. **Self-contained & offline.** One HTML file. No build. Inline CSS/SVG; CDN only if
+8. **Self-contained & offline.** One HTML file. No build. Inline CSS/SVG; CDN only if
    unavoidable. It must open by double-click and survive being copied to another machine.
-8. **Editorial, not dashboard.** Calm document aesthetic (see craft ref): readable
+9. **Editorial, not dashboard.** Calm document aesthetic (see craft ref): readable
    width, numbered sticky table of contents, claim-carrying section titles, callouts —
    a thing a person can skim or read top to bottom, not a wall of widgets.
-9. **Hand back a clickable link.** People look from a different machine. Prefer pushing the
+10. **Hand back a clickable link.** People look from a different machine. Prefer pushing the
    self-contained page to GitHub and returning an `htmlpreview.github.io/?<blob-url>` link —
    anyone clicks and sees it rendered, no download, no reachable server. Fall back to
    `python3 -m http.server` + a LAN/tunnel IP only when you can't push. (See craft ref.)
@@ -76,3 +81,5 @@ grounding, serving) — that lives in [`references/html-craft.md`](references/ht
   makes a claim believable.
 - ❌ Process-first narration ("I inspected... then...") — useful work notes are not the
   same as a useful explanation.
+- ❌ Semantic PR reports without coverage — if a changed function/class is absent from the
+  report, the report is incomplete even if the top-level story is correct.

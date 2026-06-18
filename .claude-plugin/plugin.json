@@ -1,7 +1,7 @@
 {
   "name": "show-me",
-  "description": "Turn a codebase, change, or tricky mechanism into one skimmable HTML page: big picture, before/after or trace, every claim grounded to code.",
-  "version": "1.0.0",
+  "description": "Turn a codebase, PR, change, or tricky mechanism into one skimmable HTML page: big picture, reverse-spec symbol coverage, before/after or trace, every claim grounded to code.",
+  "version": "1.1.0",
   "author": {
     "name": "Xingyao Wang",
     "email": "xingyaoww@gmail.com"
